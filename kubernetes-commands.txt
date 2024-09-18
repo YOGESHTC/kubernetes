@@ -1,0 +1,147 @@
+Creation of Pod
+-----------------
+apiVersion: v1
+kind: Pod
+metadata:
+   name: my-pod
+   labels:
+      app: my-app
+spec:
+  containers:
+     - name: nginx-container
+       image: nginx
+     - name: jenkins-container
+       image: Jenkins/Jenkins
+
+Commands:
+----------
+1.To create a pod
+-->kubectl create -f pod-filename.yaml
+2.To list the pods
+-->kubectl get pods
+3.To delete the pods
+-->kubectl delete pod pod-name
+
+Creation of Replication Controller
+----------------------------------
+apiVersion: v1
+kind: ReplicationController
+metadata:
+   name: my-rc
+   labels:
+     app: my-app
+spec:
+  template:
+     metadata:
+        name: my-pod
+        labels:
+          app: my-app
+     spec:
+       containers:
+          - name: httpd-container
+            image: httpd
+
+Commands:
+---------
+1.To create a Replication Controller
+-->kubectl create -f replication-controller-filename.yaml
+2.To list the replication-controller
+-->kubectl get replicationcontroller
+
+Creation of ReplicaSet
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+    name: my-rs
+    labels:
+      app: my-app
+spec:
+  template:
+      metadata:
+         name: my-pod
+         labels:
+            app: my-app
+      spec:
+        containers: 
+           - name: barista-container
+             image: sushmagowda321/barista
+  selector:
+      matchLabels:
+          app: my-app
+  replicas: 3
+
+
+Commands:
+1.To create replicaset
+-->kubectl create -f replicaset-filename.yaml
+2.To list replicaset
+-->kubectl get replicaset
+3.To scale up the pods
+-->kubectl scale replicaset replicaset-name --replicas=6
+4.To delete the replicaset
+-->kubectl delete replicaset replicaset-name
+note: it also deletes the pods inside it
+
+
+Creation of Deployment
+----------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: my-deployment
+    labels:
+      app: my-app
+spec:
+   template:
+      metadata:
+        name: d-pod
+        labels:
+           app: my-app
+      spec:
+         containers:
+            - name: myapp-container
+              image: finance
+  selector:
+     matchLabels:
+         app: my-app
+  replicas: 3
+
+Commands:
+---------
+1.To create a deployment
+-->kubectl create -f deployment.yaml
+2.To list the deployments
+-->kubectl get deplyments
+3.To set the different image for the existing container
+-->kubectl set image deployment/deployment-name container-name=new-image-name
+4.To rollout the changes of the deployment
+-->kubectl rollout undo deployment/my-deployment-name
+5.to see all created objects at once
+-->kubectl get all
+
+To enter inside a container
+-->kubectl exec -it my-pod -- /bin/bash
+to enter inside a container when we have multiple container inside a pod
+-->kubectl exec -it <pod-name> -c <container-name> -- /bin/bash
+
+service
+-----------
+apiVersion: v1
+kind: Service
+metadata:
+  name: calci-service
+spec:
+  type: NodePort
+  selector:
+    app: my-calci
+  ports:
+    - port: 80   # Port exposed by the service
+      targetPort: 80   # Port on the container
+      nodePort: 30080
+commands:
+-------------
+1.To create a service
+-->kubectl apply -f service.yaml
+2.to list the services
+-->kubectl get svc
+
